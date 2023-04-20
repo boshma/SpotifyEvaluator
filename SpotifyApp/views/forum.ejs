@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Forum</title>
+  </head>
+  <body>
+    <h1>Forum</h1>
+    <a href="/logout">Logout</a>
+    <hr>
+    <% if (threads.length === 0) { %>
+      <p>No threads available. Be the first to create one!</p>
+      <a href="/forum/new">Create a new thread</a>
+    <% } else { %>
+      <% threads.forEach(thread => { %>
+        <div>
+          <h2><%= thread.title %></h2>
+          <p>By <%= thread.author.displayName %> at <%= thread.createdAt %></p>
+        </div>
+      <% }); %>
+      <a href="/forum/new">Create a new thread</a>
+    <% } %>
+  </body>
+</html>

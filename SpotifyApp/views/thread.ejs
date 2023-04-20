@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= thread.title %></title>
+  </head>
+  <body>
+    <h1><%= thread.title %></h1>
+    <a href="/forum">Back to forum</a>
+    <hr>
+    <div>
+      <h3>By <%= thread.author.displayName %> at <%= thread.createdAt %></h3>
+      <p><%= thread.content %></p>
+    </div>
+    <% thread.Posts.forEach(post => { %>
+      <div>
+        <p>By <%= post.author.displayName %> at <%= post.createdAt %></p>
+        <p><%= post.content %></p>
+      </div>
+    <% }); %>
+  </body>
+</html>
