@@ -2,5 +2,10 @@
   "development": {
     "dialect": "sqlite",
     "storage": "database.sqlite3"
+  },
+  "production": {
+    "dialect": "sqlite",
+    "storage": "database.sqlite3",
+    "use_env_variable": "DATABASE_URL"
   }
 }
