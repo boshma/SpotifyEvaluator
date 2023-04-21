@@ -51,10 +51,10 @@ passport.deserializeUser(async function(id, done) {
 });
 
 passport.use(new SpotifyStrategy({
-    clientID: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    callbackURL: process.env.SPOTIFY_CALLBACK_URL
-  },
+  clientID: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  callbackURL: process.env.NODE_ENV === 'production' ? process.env.SPOTIFY_CALLBACK_URL_PROD : process.env.SPOTIFY_CALLBACK_URL_LOCAL
+},
   async function(accessToken, refreshToken, expires_in, profile, done) {
     try {
       const [user, created] = await User.findOrCreate({
