@@ -8,11 +8,27 @@ module.exports = (sequelize, DataTypes) => {
 
   Post.associate = function(models) {
     Post.belongsTo(models.User, {
-      foreignKey: 'userId',
+      foreignKey: {
+        name: 'spotifyId',
+        allowNull: false,
+      },
+      onDelete: 'NO ACTION',
+      onUpdate: 'CASCADE',
       as: 'author',
     });
-    Post.belongsTo(models.Thread);
+    Post.belongsTo(models.Thread, {
+      foreignKey: {
+        name: 'ThreadId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   };
 
   return Post;
 };
+
+
+
+

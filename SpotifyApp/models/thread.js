@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   Thread.associate = function(models) {
     Thread.belongsTo(models.User, {
       foreignKey: {
-        name: 'userId',
+        name: 'spotifyId',
         allowNull: false,
       },
       onDelete: 'NO ACTION',
@@ -21,5 +21,6 @@ module.exports = (sequelize, DataTypes) => {
 
   return Thread;
 };
+
 
 

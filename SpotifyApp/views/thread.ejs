@@ -15,7 +15,20 @@
       <div>
         <p>By <%= post.author.displayName %> at <%= post.createdAt %></p>
         <p><%= post.content %></p>
+        <% if (post.author.spotifyId === user.spotifyId) { %>
+          <a href="/forum/post/<%= post.id %>/edit">Edit</a>
+          <form action="/forum/post/<%= post.id %>/delete" method="post" style="display:inline;">
+            <button type="submit">Delete</button>
+          </form>
+        <% } %>
       </div>
     <% }); %>
+    <hr>
+    <form action="/forum/thread/<%= thread.id %>/new-post" method="post">
+      <label for="content">New Post:</label>
+      <textarea name="content" id="content" required></textarea>
+      <br>
+      <button type="submit">Post</button>
+    </form>
   </body>
 </html>

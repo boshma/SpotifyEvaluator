@@ -18,11 +18,12 @@ router.get('/', isAuthenticated, async (req, res, next) => {
       include: [{
         model: User,
         as: 'author',
-        attributes: ['displayName']
+        attributes: ['displayName', 'spotifyId']
       }],
       order: [['createdAt', 'DESC']]
     });
-    res.render('forum', { threads });
+    res.render('forum', { threads, user: req.user });
+
   } catch (err) {
     next(err);
   }
@@ -37,7 +38,7 @@ router.post('/new', isAuthenticated, async (req, res, next) => {
     const thread = await Thread.create({
       title: req.body.title,
       content: req.body.content,
-      userId: req.user.id
+      spotifyId: req.user.id
     });
     res.redirect(`/forum/thread/${thread.id}`);
   } catch (err) {
@@ -59,7 +60,7 @@ router.get('/thread/:id', isAuthenticated, async (req, res, next) => {
         include: [{
           model: User,
           as: 'author',
-          attributes: ['displayName']
+          attributes: ['displayName', 'spotifyId']
         }],
       }],
       order: [[Post, 'createdAt', 'ASC']]
@@ -69,11 +70,129 @@ router.get('/thread/:id', isAuthenticated, async (req, res, next) => {
       return res.status(404).send('Thread not found');
     }
 
-    res.render('thread', { thread });
+    res.render('thread', { thread, user: req.user }); // Pass the user object here
   } catch (err) {
     next(err);
   }
 });
+
+
+router.post('/thread/:id/new-post', async (req, res, next) => {
+  try {
+    const threadId = req.params.id;
+    const thread = await Thread.findByPk(threadId, {
+      include: [{
+        model: User,
+        as: 'author',
+      }],
+    });
+
+    if (!thread) {
+      return res.status(404).send('Thread not found');
+    }
+
+    const newPost = await Post.create({
+      content: req.body.content,
+      ThreadId: thread.id,
+      spotifyId: req.user.id,
+    });
+
+    res.redirect(`/forum/thread/${thread.id}`);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
+router.get('/post/:id/edit', isAuthenticated, async (req, res, next) => {
+  try {
+    const post = await Post.findByPk(req.params.id, {
+      include: [{ model: User, as: 'author' }]
+    });
+
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    if (post.author.spotifyId !== req.user.spotifyId) {
+      return res.status(403).send('Not allowed');
+    }
+
+    res.render('edit-post', { post });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/post/:id/edit', isAuthenticated, async (req, res, next) => {
+  try {
+    const post = await Post.findByPk(req.params.id, {
+      include: [{ model: User, as: 'author' }]
+    });
+
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    if (post.author.spotifyId !== req.user.spotifyId) {
+      return res.status(403).send('Not allowed');
+    }
+
+    await post.update({ content: req.body.content });
+    res.redirect(`/forum/thread/${post.ThreadId}`); 
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+router.post('/post/:id/delete', isAuthenticated, async (req, res, next) => {
+  try {
+    const post = await Post.findByPk(req.params.id, {
+      include: [{ model: User, as: 'author' }]
+    });
+
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    if (post.author.spotifyId !== req.user.spotifyId) {
+      return res.status(403).send('Not allowed');
+    }
+
+    const threadId = post.ThreadId; // Store the ThreadId before deleting the post
+    await post.destroy();
+    res.redirect(`/forum/thread/${threadId}`); // Redirect to the thread using the stored ThreadId
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+router.post('/thread/:id/delete', isAuthenticated, async (req, res, next) => {
+  try {
+    const thread = await Thread.findByPk(req.params.id, {
+      include: [{ model: User, as: 'author' }]
+    });
+
+    if (!thread) {
+      return res.status(404).send('Thread not found');
+    }
+
+    if (thread.author.spotifyId !== req.user.spotifyId) {
+      return res.status(403).send('Not allowed');
+    }
+
+    await thread.destroy();
+    res.redirect('/forum');
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
 
 
 module.exports = router;
