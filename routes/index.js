@@ -5,7 +5,10 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express', user: req.user });
+  // Extract profile image URL from req.user object
+  const profileImageUrl = req.user ? req.user.profileImage[0].url : null;
+
+  res.render('index', { title: 'Express', user: req.user, profileImageUrl: profileImageUrl });
 });
 
 router.get('/auth/spotify',

@@ -62,7 +62,7 @@ passport.use(new SpotifyStrategy({
         defaults: {
           displayName: profile.displayName,
           email: profile.emails ? profile.emails[0].value : null,
-          profileImage: profile.photos ? profile.photos[0] : null
+          profileImage: profile.photos ? JSON.stringify(profile.photos[0]) : null
         }
       });
 
@@ -72,6 +72,7 @@ passport.use(new SpotifyStrategy({
     }
   }
 ));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
