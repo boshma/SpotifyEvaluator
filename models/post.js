@@ -1,9 +1,9 @@
-//models/post.js
-
+// models/post.js
 module.exports = (sequelize, DataTypes) => {
   const Post = sequelize.define('Post', {
     content: DataTypes.TEXT,
     timestamp: DataTypes.DATE,
+    ReplyTo: DataTypes.INTEGER,
   });
 
   Post.associate = function(models) {
@@ -24,11 +24,14 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });
+    Post.belongsTo(models.Post, {
+      foreignKey: {
+        name: 'ReplyTo',
+        allowNull: true,
+      },
+      as: 'ReplyToPost',
+    });
   };
 
   return Post;
 };
-
-
-
-

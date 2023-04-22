@@ -1,0 +1,26 @@
+<!-- new-reply.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reply to <%= postToReply.author.displayName %></title>
+  </head>
+  <body>
+    <h1>Reply to <%= postToReply.author.displayName %></h1>
+    <a href="/forum/thread/<%= thread.id %>">Back to thread</a>
+    <hr>
+    <h3>Original message: (Created at <%= postToReply.createdAt %>)</h3>
+    <p></p>
+    <div>
+      
+      <p><%= postToReply.content %></p>
+    </div>
+    <hr>
+    <form action="/forum/thread/<%= thread.id %>/new-post" method="post">
+      <input type="hidden" name="replyTo" value="<%= postToReply.id %>">
+      <label for="content">Your Reply:</label>
+      <textarea name="content" id="content" required></textarea>
+      <br>
+      <button type="submit">Post</button>
+    </form>
+  </body>
+</html>

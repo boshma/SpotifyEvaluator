@@ -61,6 +61,10 @@ router.get('/thread/:id', isAuthenticated, async (req, res, next) => {
           model: User,
           as: 'author',
           attributes: ['displayName', 'spotifyId']
+        }, {
+          model: Post,
+          as: 'ReplyToPost',
+          attributes: ['content']
         }],
       }],
       order: [[Post, 'createdAt', 'ASC']]
@@ -95,6 +99,7 @@ router.post('/thread/:id/new-post', async (req, res, next) => {
       content: req.body.content,
       ThreadId: thread.id,
       spotifyId: req.user.id,
+      ReplyTo: req.body.replyTo || null,
     });
 
     res.redirect(`/forum/thread/${thread.id}`);
@@ -162,6 +167,8 @@ router.post('/post/:id/delete', isAuthenticated, async (req, res, next) => {
     }
 
     const threadId = post.ThreadId; // Store the ThreadId before deleting the post
+    await Post.update({ ReplyTo: null }, { where: { ReplyTo: req.params.id } }); // Sets children to null so post can be deleted.
+
     await post.destroy();
     res.redirect(`/forum/thread/${threadId}`); // Redirect to the thread using the stored ThreadId
   } catch (err) {
@@ -186,6 +193,24 @@ router.post('/thread/:id/delete', isAuthenticated, async (req, res, next) => {
 
     await thread.destroy();
     res.redirect('/forum');
+  } catch (err) {
+    next(err);
+  }
+});
+
+//Reply to functionality
+router.get('/thread/:id/reply-to/:postId', isAuthenticated, async (req, res, next) => {
+  try {
+    const thread = await Thread.findByPk(req.params.id);
+    const postToReply = await Post.findByPk(req.params.postId, {
+      include: [{ model: User, as: 'author', attributes: ['displayName'] }]
+    });
+
+    if (!thread || !postToReply) {
+      return res.status(404).send('Thread or post not found');
+    }
+
+    res.render('new-reply', { thread, postToReply, user: req.user });
   } catch (err) {
     next(err);
   }
