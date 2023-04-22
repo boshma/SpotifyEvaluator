@@ -1,11 +1,13 @@
+<!-- edit-post.ejs -->
 <!DOCTYPE html>
 <html>
   <head>
     <title>Edit Post</title>
   </head>
   <body>
+    <%- include('partials/navbar') %>
     <h1>Edit Post</h1>
-    <a href="/forum/thread/<%= post.threadId %>">Back to thread</a>
+    <a href="/forum/thread/<%= post.ThreadId %>">Back to thread</a>
     <hr>
     <form action="/forum/post/<%= post.id %>/edit" method="post">
       <label for="content">Content:</label>
