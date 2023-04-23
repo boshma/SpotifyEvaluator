@@ -253,6 +253,13 @@
   "resolved" "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   "version" "0.0.1"
 
+"connect-session-sequelize@^7.1.6":
+  "integrity" "sha512-gYV5J4QXTCNqq8pKLQeQadRfKjzCJaf4zqOZEf8Gut+8fBlEDOPviYQXup011vEx97if3hqzCJukkTuLzERmtw=="
+  "resolved" "https://registry.npmjs.org/connect-session-sequelize/-/connect-session-sequelize-7.1.6.tgz"
+  "version" "7.1.6"
+  dependencies:
+    "debug" "^4.1.1"
+
 "console-control-strings@^1.0.0", "console-control-strings@^1.1.0":
   "integrity" "sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ=="
   "resolved" "https://registry.npmjs.org/console-control-strings/-/console-control-strings-1.1.0.tgz"
@@ -1281,7 +1288,7 @@
   "resolved" "https://registry.npmjs.org/sequelize-pool/-/sequelize-pool-7.1.0.tgz"
   "version" "7.1.0"
 
-"sequelize@^6.31.0":
+"sequelize@^6.31.0", "sequelize@>= 6.1.0":
   "integrity" "sha512-nCPVtv+QydBmb3Us2jCNAr1Dx3gST83VZxxrUQn/JAVFCOrmYOgUaPUz5bevummyNf30zfHsZhIKYAOD3ULfTA=="
   "resolved" "https://registry.npmjs.org/sequelize/-/sequelize-6.31.0.tgz"
   "version" "6.31.0"

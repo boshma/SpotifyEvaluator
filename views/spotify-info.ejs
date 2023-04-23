@@ -1,0 +1,37 @@
+<!-- spotify-info.ejs -->
+
+<!-- spotify-info.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <%- include('partials/navbar') %>
+    <h1>Spotify Evaluator</h1>
+    <h2>Welcome <%= userData.display_name %>! Here is your listening history and metrics.</h2>
+    <h3>Top 5 Artists:</h3>
+    <ol>
+      <% artists.forEach(artist => { %>
+        <li><%= artist.name %></li>
+      <% }) %>
+    </ol>
+    <h3>Top 5 Tracks:</h3>
+    <ol>
+      <% tracks.forEach(track => { %>
+        <li><%= track.name %> by <%= track.artists %></li>
+      <% }) %>
+    </ol>
+    <h3>Listening History:</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+      <% history.forEach(item => { %>
+        <div>
+          <img src="<%= item.albumImage %>" alt="<%= item.album %>" style="max-width: 150px; max-height: 150px;">
+          <p><strong><%= item.track %></strong> by <%= item.artist %></p>
+          <p>Album: <%= item.album %></p>
+        </div>
+      <% }) %>
+    </div>
+  </body>
+</html>

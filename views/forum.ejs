@@ -24,8 +24,15 @@
           <% } %>
         </div>
       <% }) %>
-      
+      <% if (user) { %>
       <a href="/forum/new">Create a new thread</a>
+      <% } else { %>
+        <p>Please <a href="/">sign in</a> to post a thread.</p>
+      <% } %>
     <% } %>
   </body>
 </html>
+
+
+
+

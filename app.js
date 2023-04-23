@@ -16,6 +16,8 @@ var usersRouter = require('./routes/users');
 
 const forumRouter = require('./routes/forum');
 
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
 
 
 

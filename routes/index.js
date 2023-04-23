@@ -1,4 +1,3 @@
-//routes/index.js
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
@@ -78,97 +77,50 @@ router.get('/auth/spotify/callback', async (req, res) => {
       albumImage: item.track.album.images[0].url // Get the URL of the first album image
     }));
 
-// Render or send response with user data, top artists, top tracks, and listening history
-    res.send(`
-      <h1>Welcome ${userData.body.display_name}! Here is your listening history and metrics.</h1>
-      <h2>Top 5 Artists:</h2>
-      <ol>
-        ${artists.map(artist => `<li> ${artist.name}</li>`).join('')}
-      </ol>
-      <h2>Top 5 Tracks:</h2>
-      <ol>
-        ${tracks.map(track => `<li>${track.name} by ${track.artists}</li>`).join('')}
-      </ol>
-      <h2>Listening History:</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        ${history.map(item => `
-          <div>
-            <img src="${item.albumImage}" alt="${item.album}" style="max-width: 150px; max-height: 150px;">
-            <p><strong>${item.track}</strong> by ${item.artist}</p>
-            <p>Album: ${item.album}</p>
-          </div>
-        `).join('')}
-      </div>
-    `);
-
-  } catch (err) {
-    // Handle any errors that occur during the authorization code exchange
-    console.error('Error exchanging authorization code for access token:', err);
-    // Send an error response to the client
-    res.status(500).send('Error exchanging authorization code for access token');
-  }
-});
-
-router.get('/logout', function (req, res) {
-  req.session.destroy((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect('/');
-  });
-});
-// Define routes
-router.get('/', (req, res) => {
-  res.send('Welcome to Spotify Evaluator!');
-});
-
-// Authenticate with Spotify
-router.get('/auth/spotify', passport.authenticate('spotify', {
-  scope: ['user-library-read', 'user-top-read'],
-  showDialog: true
-}));
-
-// Callback URL after Spotify authentication
-router.get('/auth/spotify/callback', passport.authenticate('spotify', {
-  failureRedirect: '/login'
-}), (req, res) => {
-  // Redirect to home page or any other page after successful authentication
-  res.redirect('/');
-});
-
-// GET user's listening history and metrics
-router.get('/user/history', async (req, res) => {
-  console.log("test");
-  if (req.isAuthenticated()) {
-    const spotifyApi = new SpotifyWebApi({
-      accessToken: req.user.accessToken, // User's access token retrieved from authentication
-      // Add any other options as required
-    });
-    console.log("in user history "+ spotifyApi)
-
-    try {
-      spotifyApi.getMyRecentlyPlayedTracks()
-      .then(data => {
-        console.log(data.body); // Log the response body to the console
-      })
-      .catch(err => {
-        console.error('Error retrieving listening history:', err);
-      });
+        // Render or send response with user data, top artists, top tracks, and listening history
+        res.render('spotify-info', {
+          title: 'Spotify Evaluator',
+          userData: userData.body,
+          artists: artists,
+          tracks: tracks,
+          history: history
+        });
     
-      // Process the data returned from the API
-      // The recent listening history is available in data.body.items
-      res.send(`Welcome ${req.user.displayName}! Here is your listening history and metrics.`);
-    } catch (err) {
-      // Handle any errors that occur while retrieving data from the API
-      console.error('Error retrieving listening history:', err);
-      // Send an error response to the client
-      res.status(500).send('Error retrieving listening history');
-    }
-  } else {
-    // Redirect to login
-    res.redirect('/auth/spotify');
-  }
-});
-
-
-module.exports = router;
+      } catch (err) {
+        // Handle any errors that occur during the authorization code exchange
+        console.error('Error exchanging authorization code for access token:', err);
+        // Send an error response to the client
+        res.status(500).send('Error exchanging authorization code for access token');
+      }
+    });
+    
+    router.get('/logout', function (req, res) {
+      req.session.destroy((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect('/');
+      });
+    });
+    
+    router.get('/', (req, res) => {
+      res.send('Welcome to Spotify Evaluator!');
+    });
+    
+    // Authenticate with Spotify
+    router.get('/auth/spotify', passport.authenticate('spotify', {
+      scope: ['user-library-read', 'user-top-read'],
+      showDialog: true
+    }));
+    
+    // Callback URL after Spotify authentication
+    router.get('/auth/spotify/callback', passport.authenticate('spotify', {
+      failureRedirect: '/login'
+    }), (req, res) => {
+      // Redirect to home page or any other page after successful authentication
+      res.redirect('/');
+    });
+    
+    module.exports = router;
+    
+    

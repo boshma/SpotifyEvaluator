@@ -30,12 +30,17 @@
       </div>
     <% }); %>
     <hr>
-    <form action="/forum/thread/<%= thread.id %>/new-post" method="post">
-      <label for="content">New Post:</label>
-      <textarea name="content" id="content" required></textarea>
-      <br>
-      <button type="submit">Post</button>
-    </form>
+    <% if (user) { %>
+      <form action="/forum/thread/<%= thread.id %>/new-post" method="post">
+        <label for="content">New Post:</label>
+        <textarea name="content" id="content" required></textarea>
+        <br>
+        <button type="submit">Post</button>
+      </form>
+    <% } else { %>
+      <p>Please <a href="/">sign in</a> to post a reply.</p>
+    <% } %>
+    
   </body>
 </html>
 
