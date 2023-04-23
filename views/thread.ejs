@@ -25,7 +25,10 @@
           <form action="/forum/post/<%= post.id %>/delete" method="post" style="display:inline;">
             <button type="submit">Delete</button>
           </form>
-          <a href="/forum/thread/<%= thread.id %>/reply-to/<%= post.id %>">Reply</a> 
+          
+        <% } %>
+        <% if (user) { %>
+        <a href="/forum/thread/<%= thread.id %>/reply-to/<%= post.id %>">Reply</a> 
         <% } %>
         
       </div>
