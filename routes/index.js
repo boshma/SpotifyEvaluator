@@ -60,53 +60,49 @@ router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureR
     const topArtists = await spotifyApi.getMyTopArtists({ limit: 5 });
     const artists = topArtists.body.items;
 
-    const topGenres = {};
-    
-    // Loop through each artist in the artists array
-    for (const artist of artists) {
-      // Retrieve artist details using artist ID
-      const artistDetails = await spotifyApi.getArtist(artist.id);
-      const genres = artistDetails.body.genres;
-    
-      // Loop through the genres of the artist
-      for (const genre of genres) {
-        // Check if the genre is already in the topGenres object, if not, add it with a count of 1
-        if (!topGenres[genre]) {
-          topGenres[genre] = 1;
-        } else {
-          // If the genre is already in the topGenres object, increment the count by 1
-          topGenres[genre]++;
-        }
-      }
-    }
-    
-    // Convert the topGenres object to an array of objects with label and value properties
-    const genreData = Object.entries(topGenres).map(([genre, count]) => ({
-      label: genre,
-      value: count
-    }));
-    
-    // Sort the genreData array in descending order based on the value (count)
-    genreData.sort((a, b) => b.value - a.value);
-    
-    // Get the top 5 genres
-    const top5Genres = genreData.slice(0, 5);
-    
-        /*
-    const genreCount = countGenres(artists);
-    const genreData = Object.entries(genreCount).map(([genre, count]) => ({
-      label: genre,
-      value: count
-    }));
-    */
-    
-
     // Retrieve user's top 5 tracks
     const topTracks = await spotifyApi.getMyTopTracks({ limit: 5 });
     const tracks = topTracks.body.items.map(track => {
       const artists = track.artists.map(artist => artist.name).join(', ');
       return { name: track.name, artists: artists };
     });
+    // Retrieve user's listening history from the last 30 days
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now);
+    thirtyDaysAgo.setDate(now.getDate() - 30);
+    const listeningHistory_30days = await spotifyApi.getMyRecentlyPlayedTracks({ after: Math.floor(thirtyDaysAgo.getTime() / 1000) });
+    const history_30days = listeningHistory_30days.body.items.map(item => ({
+      artist: item.track.artists[0].name,
+      track: item.track.name,
+      album: item.track.album.name,
+      albumImage: item.track.album.images[0].url // Get the URL of the first album image
+    }));
+    const topGenres = {};
+
+    // Loop through each item in the listening history
+    for (const item of history_30days) {
+      // Retrieve artist details using artist name
+      const artistDetails = await spotifyApi.searchArtists(item.artist);
+      const artists = artistDetails.body.artists.items;
+
+      // Loop through the artists of the item
+      for (const artist of artists) {
+        const genres = artist.genres;
+
+        // Loop through the genres of the artist
+        for (const genre of genres) {
+          // Check if the genre is already in the topGenres object, if not, add it with a count of 1
+          if (!topGenres[genre]) {
+            topGenres[genre] = 1;
+          } else {
+            // If the genre is already in the topGenres object, increment the count by 1
+            topGenres[genre]++;
+          }
+        }
+      }
+    }
+    
+    
 
     // Retrieve user's listening history
     const listeningHistory = await spotifyApi.getMyRecentlyPlayedTracks({ limit: 10 });
@@ -116,6 +112,18 @@ router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureR
       album: item.track.album.name,
       albumImage: item.track.album.images[0].url // Get the URL of the first album image
     }));
+
+    // Convert the topGenres object to an array of objects with label and value properties
+    const genreData = Object.entries(topGenres).map(([genre, count]) => ({
+      label: genre,
+      value: count
+    }));
+
+    // Sort the genreData array in descending order based on the value (count)
+    genreData.sort((a, b) => b.value - a.value);
+
+    // Get the top 5 genres
+    const top5Genres = genreData.slice(0, 5);
 
     res.render('spotify-info', {
       title: 'Spotify Evaluator',
