@@ -20,13 +20,17 @@
           <p><strong>Replying to:</strong> <%= post.author.displayName %> : <%= post.ReplyToPost.content.substring(0, 20) %>...</p>
         <% } %>
         <p><%= post.content %></p>
-        <% if (post.author.spotifyId === user.spotifyId) { %>
+        <% if (user && post.author.spotifyId === user.spotifyId) { %>
           <a href="/forum/post/<%= post.id %>/edit">Edit</a>
           <form action="/forum/post/<%= post.id %>/delete" method="post" style="display:inline;">
             <button type="submit">Delete</button>
           </form>
+          
         <% } %>
+       
         <a href="/forum/thread/<%= thread.id %>/reply-to/<%= post.id %>">Reply</a> 
+       
+        
       </div>
     <% }); %>
     <hr>
@@ -43,5 +47,3 @@
     
   </body>
 </html>
-
-   

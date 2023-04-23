@@ -15,7 +15,7 @@
     <div>
       <h2><a href="/forum/thread/<%= thread.id %>"><%= thread.title %></a></h2>
       <p>By <%= thread.author.displayName %> at <%= thread.createdAt %></p>
-      <% if (thread.author.spotifyId === user.spotifyId) { %>
+      <% if (user && thread.author.spotifyId === user.spotifyId) { %>
       <form
         action="/forum/thread/<%= thread.id %>/delete"
         method="post"
