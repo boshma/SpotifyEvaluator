@@ -31,7 +31,19 @@ router.get('/auth/spotify',
     // function will not be called.
   }
 );
-
+function countGenres(artists) {
+  const genreCount = {};
+  artists.forEach(artist => {
+    artist.genres.forEach(genre => {
+      if (genreCount[genre]) {
+        genreCount[genre]++;
+      } else {
+        genreCount[genre] = 1;
+      }
+    });
+  });
+  return genreCount;
+}
 router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureRedirect: '/' }), async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -46,10 +58,48 @@ router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureR
 
     // Retrieve user's top 5 artists
     const topArtists = await spotifyApi.getMyTopArtists({ limit: 5 });
-    const artists = topArtists.body.items.map((artist, index) => ({
-      name: artist.name,
-      plays: artist.playcount // Get the play count of the artist
+    const artists = topArtists.body.items;
+
+    const topGenres = {};
+    
+    // Loop through each artist in the artists array
+    for (const artist of artists) {
+      // Retrieve artist details using artist ID
+      const artistDetails = await spotifyApi.getArtist(artist.id);
+      const genres = artistDetails.body.genres;
+    
+      // Loop through the genres of the artist
+      for (const genre of genres) {
+        // Check if the genre is already in the topGenres object, if not, add it with a count of 1
+        if (!topGenres[genre]) {
+          topGenres[genre] = 1;
+        } else {
+          // If the genre is already in the topGenres object, increment the count by 1
+          topGenres[genre]++;
+        }
+      }
+    }
+    
+    // Convert the topGenres object to an array of objects with label and value properties
+    const genreData = Object.entries(topGenres).map(([genre, count]) => ({
+      label: genre,
+      value: count
     }));
+    
+    // Sort the genreData array in descending order based on the value (count)
+    genreData.sort((a, b) => b.value - a.value);
+    
+    // Get the top 5 genres
+    const top5Genres = genreData.slice(0, 5);
+    
+        /*
+    const genreCount = countGenres(artists);
+    const genreData = Object.entries(genreCount).map(([genre, count]) => ({
+      label: genre,
+      value: count
+    }));
+    */
+    
 
     // Retrieve user's top 5 tracks
     const topTracks = await spotifyApi.getMyTopTracks({ limit: 5 });
@@ -72,7 +122,8 @@ router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureR
       userData: userData.body,
       artists: artists,
       tracks: tracks,
-      history: history
+      history: history,
+      genreData: top5Genres
     });
 
   } catch (err) {
