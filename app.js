@@ -18,14 +18,21 @@ const forumRouter = require('./routes/forum');
 
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+const { sequelize } = require('./models');
 
+
+const sessionStore = new SequelizeStore({
+  db: sequelize
+});
 
 
 var app = express();
 
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
+  store: sessionStore,
   saveUninitialized: false,
   cookie: { secure: false }
 }));
@@ -68,6 +75,10 @@ passport.use(new SpotifyStrategy({
         }
       });
 
+      user.accessToken = accessToken;
+      user.refreshToken = refreshToken;
+      await user.save();
+
       return done(null, user);
     } catch (err) {
       return done(err);
@@ -106,9 +117,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+
+
 module.exports = app;
 
-const { sequelize } = require('./models');
 
 sequelize.sync({ force: true }) 
   .then(() => {
@@ -117,6 +130,8 @@ sequelize.sync({ force: true })
   .catch((err) => {
     console.error('Unable to create tables:', err);
   });
+
+  sessionStore.sync();
 
   sequelize.showAllSchemas()
   .then((tableList) => {

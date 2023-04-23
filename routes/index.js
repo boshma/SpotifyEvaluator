@@ -1,3 +1,4 @@
+// routes/index.js
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
@@ -5,7 +6,7 @@ require('dotenv').config();
 const SpotifyWebApi = require('spotify-web-api-node');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   // Extract profile image URL from req.user object
   const profileImageUrl = req.user ? req.user.profileImage[0].url : null;
 
@@ -25,33 +26,21 @@ router.get('/auth/spotify',
     ],
     showDialog: true
   }),
-  function(req, res) {
+  function (req, res) {
     // The request will be redirected to Spotify for authentication, so this
     // function will not be called.
   }
 );
 
-router.get('/auth/spotify/callback', async (req, res) => {
-  const code = req.query.code; // Authorization code obtained from Spotify
+router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureRedirect: '/' }), async (req, res) => {
   const spotifyApi = new SpotifyWebApi({
-    clientId: process.env.SPOTIFY_CLIENT_ID, // Your Spotify application's client ID
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET, // Your Spotify application's client secret
-    redirectUri: process.env.SPOTIFY_CALLBACK_URL_LOCAL // Your Spotify application's redirect URI
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    accessToken: req.user.accessToken, // Use the access token from req.user
+    refreshToken: req.user.refreshToken // Use the refresh token from req.user
   });
 
   try {
-    // Exchange authorization code for access token
-    const data = await spotifyApi.authorizationCodeGrant(code);
-    const accessToken = data.body['access_token'];
-    const refreshToken = data.body['refresh_token'];
-
-    // Step 4: Store and use the access token
-    // Store the access token and refresh token securely in your application
-    // For example, you can save them in a server-side environment variable or a secure database
-    // Then use the access token to make authorized requests to the Spotify API
-    spotifyApi.setAccessToken(accessToken);
-    spotifyApi.setRefreshToken(refreshToken);
-
     // Now you can use the access token to make authorized requests to the Spotify API
     const userData = await spotifyApi.getMe(); // Example request to retrieve user data
 
@@ -68,6 +57,7 @@ router.get('/auth/spotify/callback', async (req, res) => {
       const artists = track.artists.map(artist => artist.name).join(', ');
       return { name: track.name, artists: artists };
     });
+
     // Retrieve user's listening history
     const listeningHistory = await spotifyApi.getMyRecentlyPlayedTracks({ limit: 10 });
     const history = listeningHistory.body.items.map(item => ({
@@ -77,50 +67,33 @@ router.get('/auth/spotify/callback', async (req, res) => {
       albumImage: item.track.album.images[0].url // Get the URL of the first album image
     }));
 
-        // Render or send response with user data, top artists, top tracks, and listening history
-        res.render('spotify-info', {
-          title: 'Spotify Evaluator',
-          userData: userData.body,
-          artists: artists,
-          tracks: tracks,
-          history: history
-        });
-    
-      } catch (err) {
-        // Handle any errors that occur during the authorization code exchange
-        console.error('Error exchanging authorization code for access token:', err);
-        // Send an error response to the client
-        res.status(500).send('Error exchanging authorization code for access token');
-      }
+    res.render('spotify-info', {
+      title: 'Spotify Evaluator',
+      userData: userData.body,
+      artists: artists,
+      tracks: tracks,
+      history: history
     });
-    
-    router.get('/logout', function (req, res) {
-      req.session.destroy((err) => {
-        if (err) {
-          return next(err);
-        }
-        res.redirect('/');
-      });
-    });
-    
-    router.get('/', (req, res) => {
-      res.send('Welcome to Spotify Evaluator!');
-    });
-    
-    // Authenticate with Spotify
-    router.get('/auth/spotify', passport.authenticate('spotify', {
-      scope: ['user-library-read', 'user-top-read'],
-      showDialog: true
-    }));
-    
-    // Callback URL after Spotify authentication
-    router.get('/auth/spotify/callback', passport.authenticate('spotify', {
-      failureRedirect: '/login'
-    }), (req, res) => {
-      // Redirect to home page or any other page after successful authentication
-      res.redirect('/');
-    });
-    
-    module.exports = router;
-    
-    
+
+  } catch (err) {
+    console.error('Error retrieving data from Spotify API:', err);
+    res.status(500).send('Error retrieving data from Spotify API');
+  }
+});
+
+router.get('/logout', function (req, res) {
+  req.session.destroy((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+});
+
+
+
+router.get('/', (req, res) => {
+  res.send('Welcome to Spotify Evaluator!');
+});
+
+module.exports = router;

@@ -12,7 +12,7 @@ function isAuthenticated(req, res, next) {
   res.redirect('/');
 }
 
-router.get('/', async (req, res, next) => { // Removed isAuthenticated middleware
+router.get('/', async (req, res, next) => { 
   try {
     const threads = await Thread.findAll({
       include: [{
@@ -72,6 +72,33 @@ router.get('/thread/:id', async (req, res, next) => { // Removed isAuthenticated
     if (!thread) {
       return res.status(404).send('Thread not found');
     }
+
+    router.post('/thread/:id/new-post', async (req, res, next) => {
+      try {
+        const threadId = req.params.id;
+        const thread = await Thread.findByPk(threadId, {
+          include: [{
+            model: User,
+            as: 'author',
+          }],
+        });
+    
+        if (!thread) {
+          return res.status(404).send('Thread not found');
+        }
+    
+        const newPost = await Post.create({
+          content: req.body.content,
+          ThreadId: thread.id,
+          spotifyId: req.user.id,
+          ReplyTo: req.body.replyTo || null,
+        });
+    
+        res.redirect(`/forum/thread/${thread.id}`);
+      } catch (err) {
+        next(err);
+      }
+    });
 
     res.render('thread', { thread, user: req.user }); // Pass the user object here
   } catch (err) {

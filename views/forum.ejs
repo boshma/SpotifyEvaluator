@@ -5,34 +5,30 @@
     <title>Forum</title>
   </head>
   <body>
-    
     <h1>Forum</h1>
     <%- include('partials/navbar') %>
-    <hr>
+    <hr />
     <% if (threads.length === 0) { %>
-      <p>No threads available. Be the first to create one!</p>
-      <a href="/forum/new">Create a new thread</a>
-    <% } else { %>
-      <% threads.forEach(thread => { %>
-        <div>
-          <h2><a href="/forum/thread/<%= thread.id %>"><%= thread.title %></a></h2>
-          <p>By <%= thread.author.displayName %> at <%= thread.createdAt %></p>
-          <% if (thread.author.spotifyId === user.spotifyId) { %>
-            <form action="/forum/thread/<%= thread.id %>/delete" method="post" style="display:inline;">
-              <button type="submit">Delete</button>
-            </form>
-          <% } %>
-        </div>
-      <% }) %>
-      <% if (user) { %>
-      <a href="/forum/new">Create a new thread</a>
-      <% } else { %>
-        <p>Please <a href="/">sign in</a> to post a thread.</p>
+    <p>No threads available. Be the first to create one!</p>
+    <a href="/forum/new">Create a new thread</a>
+    <% } else { %> <% threads.forEach(thread => { %>
+    <div>
+      <h2><a href="/forum/thread/<%= thread.id %>"><%= thread.title %></a></h2>
+      <p>By <%= thread.author.displayName %> at <%= thread.createdAt %></p>
+      <% if (thread.author.spotifyId === user.spotifyId) { %>
+      <form
+        action="/forum/thread/<%= thread.id %>/delete"
+        method="post"
+        style="display: inline"
+      >
+        <button type="submit">Delete</button>
+      </form>
       <% } %>
-    <% } %>
+    </div>
+    <% }) %> <% if (user) { %>
+    <a href="/forum/new">Create a new thread</a>
+    <% } else { %>
+    <p>Please <a href="/">sign in</a> to post a reply.</p>
+    <% } %> <% } %>
   </body>
 </html>
-
-
-
-
