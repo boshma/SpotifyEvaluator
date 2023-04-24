@@ -29,7 +29,6 @@ function isAuthenticated(req, res, next) {
         question2: req.body.question2,
         question3: req.body.question3,
       });
-  
       res.redirect(`/forum`);
     } 
     catch (err) {
