@@ -1,4 +1,4 @@
-// routes/forum.js
+// routes/survey.js
 
 const express = require('express');
 const router = express.Router();
