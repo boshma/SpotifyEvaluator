@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "connect-session-sequelize": "^7.1.6",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
@@ -17,6 +18,8 @@
     "passport": "^0.6.0",
     "passport-spotify": "^2.0.0",
     "sequelize": "^6.31.0",
-    "sqlite3": "^5.1.6"
+    "spotify-web-api-node": "^5.0.2",
+    "sqlite3": "^5.1.6",
+    "tailwindcss": "^3.3.1"
   }
 }
