@@ -108,6 +108,28 @@ router.post('/thread/:id/new-post', async (req, res, next) => {
   }
 });
 
+router.post('/post/:id/edit', isAuthenticated, async (req, res, next) => {
+  try {
+    const post = await Post.findByPk(req.params.id, {
+      include: [{ model: User, as: 'author' }]
+    });
+
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    if (post.author.spotifyId !== req.user.spotifyId) {
+      return res.status(403).send('Not allowed');
+    }
+
+    await post.update({ content: req.body.content });
+    res.redirect(`/forum/thread/${post.ThreadId}`);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 router.get('/post/:id/edit', isAuthenticated, async (req, res, next) => {
   try {
     const post = await Post.findByPk(req.params.id, {
