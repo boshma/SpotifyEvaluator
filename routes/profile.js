@@ -16,7 +16,7 @@ function isAuthenticated(req, res, next) {
   router.get('/', isAuthenticated, async (req, res, next) => {
     try {
         // Render the profile page with the alreadySubmitted variable
-        res.render('profile');
+        res.render('profile', {user: req.user});
     } catch (err) {
       next(err);
     }

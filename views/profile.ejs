@@ -9,5 +9,15 @@
     <div class="w-full max-w-md">
       <h1 class="text-2xl font-bold mb-6">Profile</h1>
     </div>
+    <h1>User Profile</h1>
+    <% if (user) { %> <!-- Add null check here -->
+      <p><strong>Name:</strong> <%= user.displayName %></p>
+      <p><strong>Email:</strong> <%= user.email %></p>
+      <p><strong>Profile Image:</strong> <%= user.profileImage %></p>
+      <h2>Spotify Data</h2>
+      <!-- Add additional data from user's SpotifyData model here -->
+    <% } else { %>
+      <p>User not found</p> <!-- Show error message if user is null or undefined -->
+    <% } %>
   </body>
 </html>
