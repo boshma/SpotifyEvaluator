@@ -1,22 +1,48 @@
 <!-- index.ejs -->
 
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <%- include('partials/navbar') %>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-    <% if (!user) { %>
-      <a href="/auth/spotify">Login with Spotify</a>
-    <% } else { %>
-      <p>Welcome, <%= user.displayName %>!</p>
-      <a href="/forum">Go to Forum</a>
-      <br>
-      <a href="/logout">Logout</a>
-    <% } %>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musical Analysis</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.17/tailwind.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 1.5s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-fixed bg-center bg-cover" style="background-image: url('https://source.unsplash.com/random?music');">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-16">
+    <div class="text-center">
+      <h1 class="text-5xl font-bold mb-4 text-white fade-in" style="animation-delay: 0.3s;">Musical Analysis</h1>
+      <p class="text-2xl mb-8 text-white fade-in" style="animation-delay: 0.6s;">Welcome to Musical Analysis</p>
+      <% if (!user) { %>
+        <a href="/auth/spotify" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-all duration-300 ease-in-out transform hover:scale-105 fade-in" style="animation-delay: 0.9s;">Login with Spotify</a>
+      <% } else { %>
+        <div class="mb-4">
+          <p class="text-lg text-white fade-in" style="animation-delay: 0.9s;">Welcome, <%= user.displayName %>!</p>
+        </div>
+        <div class="space-x-4">
+          <a href="/forum" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all duration-300 ease-in-out transform hover:scale-105 fade-in" style="animation-delay: 1.2s;">Go to Forum</a>
+          <a href="/survey" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded transition-all duration-300 ease-in-out transform hover:scale-105 fade-in" style="animation-delay: 1.5s;">Please answer our Survey!</a>
+          <a href="/logout" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-all duration-300 ease-in-out transform hover:scale-105 fade-in" style="animation-delay: 1.8s;">Logout</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+</body>
 </html>
