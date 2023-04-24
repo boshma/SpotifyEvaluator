@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { User, Thread, Post } = require('../models');
+const { SurveyResponse } = require('../models');
 
 
 // Middleware to check if the user is authenticated
@@ -15,17 +15,23 @@ function isAuthenticated(req, res, next) {
   
   router.get('/', isAuthenticated, async (req, res, next) => {
     try {
-      const threads = await Thread.findAll({
-        include: [{
-          model: User,
-          as: 'author',
-          attributes: ['displayName', 'spotifyId']
-        }],
-        order: [['createdAt', 'DESC']]
-      });
-      res.render('survey', { threads, user: req.user });
-  
+      res.render('survey');
     } catch (err) {
+      next(err);
+    }
+  });
+
+  router.post('/submit', async (req, res, next) => {
+    try {  
+      const newResponse = await SurveyResponse.create({
+        user: req.user.spotifyId,
+        question1: req.body.question1,
+        question2: req.body.question2,
+        question3: req.body.question3,
+      });
+      res.redirect(`/forum`);
+    } 
+    catch (err) {
       next(err);
     }
   });
