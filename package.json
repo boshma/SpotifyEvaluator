@@ -19,6 +19,7 @@
     "passport-spotify": "^2.0.0",
     "sequelize": "^6.31.0",
     "spotify-web-api-node": "^5.0.2",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "tailwindcss": "^3.3.1"
   }
 }

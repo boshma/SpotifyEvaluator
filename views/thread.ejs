@@ -1,49 +1,51 @@
-<!-- thread.ejs -->
 <!DOCTYPE html>
 <html>
   <head>
     <title><%= thread.title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.17/tailwind.min.css"  crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
-  <body>
-    <%- include('partials/navbar') %>
-    <h1><%= thread.title %></h1>
-    <a href="/forum">Back to forum</a>
-    <hr>
-    <div>
-      <h3>By <%= thread.author.displayName %> at <%= thread.createdAt %></h3>
-      <p><%= thread.content %></p>
-    </div>
-    <% thread.Posts.forEach(post => { %>
-      <div>
-        <p>By <%= post.author.displayName %> at <%= post.createdAt %></p>
-        <% if (post.ReplyTo) { %>
-          <p><strong>Replying to:</strong> <%= post.author.displayName %> : <%= post.ReplyToPost.content.substring(0, 20) %>...</p>
-        <% } %>
-        <p><%= post.content %></p>
-        <% if (user && post.author.spotifyId === user.spotifyId) { %>
-          <a href="/forum/post/<%= post.id %>/edit">Edit</a>
-          <form action="/forum/post/<%= post.id %>/delete" method="post" style="display:inline;">
-            <button type="submit">Delete</button>
-          </form>
-          
-        <% } %>
-       
-        <a href="/forum/thread/<%= thread.id %>/reply-to/<%= post.id %>">Reply</a> 
-       
-        
+  <%- include('partials/navbar') %>
+  <body class="bg-gray-100">
+  
+    <main class="container mx-auto px-6 py-4">
+      <h1 class="text-3xl font-bold text-gray-800 mb-4"><%= thread.title %></h1>
+     
+      <hr class="my-4">
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-lg font-semibold mb-2">By <%= thread.author.displayName %> at <%= thread.createdAt %></h3>
+        <p><%= thread.content %></p>
       </div>
-    <% }); %>
-    <hr>
-    <% if (user) { %>
-      <form action="/forum/thread/<%= thread.id %>/new-post" method="post">
-        <label for="content">New Post:</label>
-        <textarea name="content" id="content" required></textarea>
-        <br>
-        <button type="submit">Post</button>
-      </form>
-    <% } else { %>
-      <p>Please <a href="/">sign in</a> to post a reply.</p>
-    <% } %>
-    
+      <% thread.Posts.forEach(post => { %>
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-4">
+          <p class="text-gray-600 text-sm">By <%= post.author.displayName %> at <%= post.createdAt %></p>
+          <% if (post.ReplyTo) { %>
+            <p class="text-sm mt-2"><%= post.author.displayName %> <strong>Replied to:</strong> <%= post.ReplyToPost.author.displayName %> : <%= post.ReplyToPost.content.substring(0, 20) %>...</p>
+          <% } %>
+          <p class="mt-2"><%= post.content %></p>
+          <% if (user && post.author.spotifyId === user.spotifyId) { %>
+            <div class="mt-4 flex justify-end">
+              <a href="/forum/post/<%= post.id %>/edit" class="text-blue-500 hover:text-blue-600 mr-4">Edit</a>
+              <form action="/forum/post/<%= post.id %>/delete" method="post" class="inline">
+                <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
+              </form>
+            </div>
+ <% } %>
+
+          <div class="mt-4 flex justify-end">
+            <a href="/forum/thread/<%= thread.id %>/reply-to/<%= post.id %>" class="text-blue-500 hover:text-blue-600 mr-4">Reply</a> 
+          </div>
+        </div>
+      <% }); %>
+      <hr class="my-4">
+      <% if (user) { %>
+        <form action="/forum/thread/<%= thread.id %>/new-post" method="post" class="mt-4">
+          <label for="content" class="block text-sm font-semibold text-gray-700">New Post:</label>
+          <textarea name="content" id="content" rows="5" class="w-full border border-gray-400 p-2 mt-2 rounded" required></textarea>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4">Post</button>
+        </form>
+      <% } else { %>
+        <p class="mt-4">Please <a href="/" class="text-blue-500 hover:text-blue-600">sign in</a> to post a reply.</p>
+      <% } %>
+    </main>
   </body>
-</html>
+  </html>
