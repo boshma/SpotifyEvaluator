@@ -4,7 +4,7 @@ const passport = require('passport');
 const router = express.Router();
 require('dotenv').config();
 const SpotifyWebApi = require('spotify-web-api-node');
-const { SpotifyData } = require('../models');
+const { User, SpotifyData } = require('../models');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -63,6 +63,24 @@ router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureR
     res.status(500).send('Error retrieving Spotify data from database');
   }
 });
+/* GET user profile. */
+router.get('/profile', function(req, res, next) {
+  // Access the logged-in user's ID from the session
+  const loggedInUserId = req.session.userId;
+
+  // Fetch the logged-in user from the database
+  User.findByPk(loggedInUserId)
+    .then(user => {
+      // Render the user profile in a view
+      res.render('profile', { user });
+    })
+    .catch(error => {
+      console.error('Error fetching user profile:', error);
+      // Render an error page
+      res.render('error', { message: 'Error fetching user profile', error });
+    });
+});
+
 
 router.get('/logout', function (req, res) {
   req.session.destroy((err) => {
