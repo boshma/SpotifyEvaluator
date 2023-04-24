@@ -1,13 +1,60 @@
 <!DOCTYPE html>
-<html class="h-full">
-  <head>
-    <title>Profile Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.17/tailwind.min.css">
-  </head>
-  <body class="h-full flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-md">
-      <h1 class="text-2xl font-bold mb-6">Profile</h1>
-    </div>
-  </body>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.17/tailwind.min.css">
+</head>
+<body class="h-full bg-gray-100">
+  <div class="container mx-auto px-4 py-16">
+    <h1 class="text-3xl font-bold mb-6 text-center">User Profile</h1>
+    <% if (user) { %>
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-semibold mb-2">Name: <%= user.displayName %></h2>
+            <p>Email: <%= user.email %></p>
+          </div>
+          <img src="<%= user.profileImage %>" alt="<%= user.displayName %>" class="w-24 h-24 object-cover rounded-full border-2 border-gray-200">
+        </div>
+
+        <h2 class="text-2xl font-bold mt-6 mb-4">Spotify Data</h2>
+        <div>
+          <h3 class="font-semibold text-lg mb-2">Top 5 Artists:</h3>
+          <ol class="list-decimal list-outside ml-5">
+            <% topArtists.forEach(artist => { %>
+              <li class="mb-1"><%= artist %></li>
+            <% }) %>
+          </ol>
+        </div>
+        <div>
+          <h3 class="font-semibold text-lg mb-2">Top 5 Tracks:</h3>
+          <ol class="list-decimal list-outside ml-5">
+            <% topSongs.forEach(song => { %>
+              <li class="mb-1"><%= song.name %> by <%= song.artist %></li>
+            <% }) %>
+          </ol>
+        </div>
+        <div>
+          <h3 class="font-semibold text-lg mb-4">Listening History:</h3>
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <% history.forEach(item => { %>
+              <div class="bg-white shadow-md rounded-lg p-4">
+                <img src="<%= item.albumImage %>" alt="<%= item.album %>" class="w-full h-40 object-cover mb-2 rounded">
+                <p class="font-semibold"><%= item.track %></p>
+                <p>by <%= item.artist %></p>
+                <p>Album: <%= item.album %></p>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="bg-white shadow-md rounded-lg p-6 text-center">
+        <p class="text-xl">User not found</p>
+      </div>
+    <% } %>
+  </div>
+</body>
 </html>
