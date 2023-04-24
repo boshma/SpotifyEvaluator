@@ -15,12 +15,13 @@
     </div>
     <% thread.Posts.forEach(post => { %>
       <div>
-        <p>By <%= post.author.displayName %> at <%= post.createdAt %></p>
+        <p>By <%= post.author.displayName %></p>
         <% if (post.ReplyTo) { %>
           <p><%= post.author.displayName %> <strong>Replied to:</strong> <%= post.ReplyToPost.author.displayName %> : <%= post.ReplyToPost.content.substring(0, 20) %>...</p>
-
+        
         <% } %>
         <p><%= post.content %></p>
+        <p><%= post.createdAt %></p>
         <% if (user && post.author.spotifyId === user.spotifyId) { %>
           <a href="/forum/post/<%= post.id %>/edit">Edit</a>
           <form action="/forum/post/<%= post.id %>/delete" method="post" style="display:inline;">
