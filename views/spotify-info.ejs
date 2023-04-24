@@ -14,13 +14,13 @@
   <h3>Top 5 Artists:</h3>
   <ol>
     <% artists.forEach(artist => { %>
-      <li><%= artist.name %></li>
+      <li><%= artist %></li>
     <% }) %>
   </ol>
   <h3>Top 5 Tracks:</h3>
   <ol>
     <% tracks.forEach(track => { %>
-      <li><%= track.name %> by <%= track.artists %></li>
+      <li><%= track.track %> by <%= track.artist %></li>
     <% }) %>
   </ol>
   <h3>Listening History:</h3>
