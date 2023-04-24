@@ -17,6 +17,7 @@ var usersRouter = require('./routes/users');
 
 const forumRouter = require('./routes/forum');
 const surveyRouter = require('./routes/survey');
+const profileRouter = require('./routes/profile');
 
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
@@ -185,6 +186,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/forum', forumRouter);
 app.use('/survey', surveyRouter);
+app.use('/profile', profileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
