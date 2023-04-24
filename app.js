@@ -88,7 +88,7 @@ passport.use(new SpotifyStrategy({
       const topArtistNames = topArtists.body.items.map(artist => artist.name);
       const topTrackNames = topTracks.body.items.map(track => ({
         artist: track.artists[0].name,
-        track: track.name
+        name: track.name
       }));
 
       const now = new Date();

@@ -52,8 +52,8 @@ router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureR
     res.render('spotify-info', {
       title: 'Spotify Evaluator',
       userData: userData.body, // Use the user object from passport.authenticate
-      artists: topArtists,
-      tracks: topSongs,
+      topArtists: topArtists,
+      topSongs: topSongs,
       history: history,
       genreData: topGenres
     });
