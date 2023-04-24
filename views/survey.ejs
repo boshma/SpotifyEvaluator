@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Survey Page</title>
+  </head>
+  <body>
+    <h1>Survey</h1>
+    <form method="POST" action="/survey/submit">
+      <p>How would you rate this app?</p>
+      <input type="radio" name="question1" value="1/5">
+      <label for="1/5">1/5</label><br>
+      <input type="radio" name="question1" value="2/5">
+      <label for="2/5">2/5</label><br>
+      <input type="radio" name="question1" value="3/5">
+      <label for="3/5">3/5</label><br>
+      <input type="radio" name="question1" value="4/5">
+      <label for="4/5">4/5</label><br>
+      <input type="radio" name="question1" value="5/5">
+      <label for="5/5">5/5</label><br>
+
+      <p>Would you pay for this app if it cost money?</p>
+      <input type="radio" name="question2" value="No">
+      <label for="No">No</label><br>
+      <input type="radio" name="question2" value="Yes">
+      <label for="Yes">Yes</label><br>
+
+      <p>How likely are you to recommend this app to a friend?</p>
+      <input type="radio" name="question3" value="Not likely">
+      <label for="Not likely">Not likely</label><br>
+      <input type="radio" name="question3" value="Somewhat likely">
+      <label for="Somewhat likely">Somewhat likely</label><br>
+      <input type="radio" name="question3" value="Very likely">
+      <label for="Very likely">Very likely</label><br>
+
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
