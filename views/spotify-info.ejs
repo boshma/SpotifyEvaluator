@@ -14,14 +14,14 @@
   <h2>Welcome <%= userData.display_name %>! Here is your listening history and metrics.</h2>
   <h3>Top 5 Artists:</h3>
   <ol>
-    <% artists.forEach(artist => { %>
-      <li><%= artist.name %></li>
+    <% topArtists.forEach(artist => { %>
+      <li><%= artist %></li>
     <% }) %>
   </ol>
   <h3>Top 5 Tracks:</h3>
   <ol>
-    <% tracks.forEach(track => { %>
-      <li><%= track.name %> by <%= track.artists %></li>
+    <% topSongs.forEach(song => { %>
+      <li><%= song.name %> by <%= song.artist %></li>
     <% }) %>
   </ol>
   <h3>Listening History:</h3>
