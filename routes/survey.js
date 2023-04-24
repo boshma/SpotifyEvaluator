@@ -15,7 +15,18 @@ function isAuthenticated(req, res, next) {
   
   router.get('/', isAuthenticated, async (req, res, next) => {
     try {
-      res.render('survey');
+        // Query the database to see if the user has already submitted a survey
+        const submission = await SurveyResponse.findOne({
+          where: {
+            user: req.user.spotifyId,
+          },
+        });
+    
+        // Set the alreadySubmitted variable based on whether a submission exists
+        const alreadySubmitted = submission ? true : false;
+    
+        // Render the survey page with the alreadySubmitted variable
+        res.render('survey', { alreadySubmitted });
     } catch (err) {
       next(err);
     }

@@ -8,6 +8,9 @@
   <body class="h-full flex items-center justify-center bg-gray-100">
     <div class="w-full max-w-md">
       <h1 class="text-2xl font-bold mb-6">Survey</h1>
+      <% if (alreadySubmitted) { %>
+        <p class="text-2xl font-medium mb-6">You have already answered this survey.</p>
+      <% } else { %>
       <form method="POST" action="/survey/submit">
         <div class="mb-6">
           <label class="block font-medium mb-2" for="question1">How would you rate this app?</label>
@@ -49,6 +52,7 @@
 
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
     </form>
+    <% } %>
   </div>
   </body>
 </html>
