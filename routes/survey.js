@@ -25,9 +25,9 @@ function isAuthenticated(req, res, next) {
     try {  
       const newResponse = await SurveyResponse.create({
         user: req.user.spotifyId,
-        question1: 1,
-        question2: 2,
-        question3: 3,
+        question1: req.body.question1,
+        question2: req.body.question2,
+        question3: req.body.question3,
       });
   
       res.redirect(`/forum`);
