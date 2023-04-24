@@ -12,7 +12,7 @@ function isAuthenticated(req, res, next) {
   res.redirect('/');
 }
 
-router.get('/', isAuthenticated, async (req, res, next) => {
+router.get('/', async (req, res, next) => { 
   try {
     const threads = await Thread.findAll({
       include: [{
@@ -46,9 +46,8 @@ router.post('/new', isAuthenticated, async (req, res, next) => {
   }
 });
 
-
 //handle viewing threads/posts
-router.get('/thread/:id', isAuthenticated, async (req, res, next) => {
+router.get('/thread/:id', async (req, res, next) => {
   try {
     const thread = await Thread.findByPk(req.params.id, {
       include: [{
@@ -64,7 +63,8 @@ router.get('/thread/:id', isAuthenticated, async (req, res, next) => {
         }, {
           model: Post,
           as: 'ReplyToPost',
-          attributes: ['content']
+          attributes: ['content'],
+          include: [{ model: User, as: 'author', attributes: ['displayName'] }] // Add this line
         }],
       }],
       order: [[Post, 'createdAt', 'ASC']]
@@ -74,7 +74,7 @@ router.get('/thread/:id', isAuthenticated, async (req, res, next) => {
       return res.status(404).send('Thread not found');
     }
 
-    res.render('thread', { thread, user: req.user }); // Pass the user object here
+    res.render('thread', { thread, user: req.user });
   } catch (err) {
     next(err);
   }
@@ -108,6 +108,26 @@ router.post('/thread/:id/new-post', async (req, res, next) => {
   }
 });
 
+router.post('/post/:id/edit', isAuthenticated, async (req, res, next) => {
+  try {
+    const post = await Post.findByPk(req.params.id, {
+      include: [{ model: User, as: 'author' }]
+    });
+
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    if (post.author.spotifyId !== req.user.spotifyId) {
+      return res.status(403).send('Not allowed');
+    }
+
+    await post.update({ content: req.body.content });
+    res.redirect(`/forum/thread/${post.ThreadId}`);
+  } catch (err) {
+    next(err);
+  }
+});
 
 
 router.get('/post/:id/edit', isAuthenticated, async (req, res, next) => {
@@ -130,22 +150,28 @@ router.get('/post/:id/edit', isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.post('/post/:id/edit', isAuthenticated, async (req, res, next) => {
+router.post('/thread/:id/new-post', async (req, res, next) => {
   try {
-    const post = await Post.findByPk(req.params.id, {
-      include: [{ model: User, as: 'author' }]
+    const threadId = req.params.id;
+    const thread = await Thread.findByPk(threadId, {
+      include: [{
+        model: User,
+        as: 'author',
+      }],
     });
 
-    if (!post) {
-      return res.status(404).send('Post not found');
+    if (!thread) {
+      return res.status(404).send('Thread not found');
     }
 
-    if (post.author.spotifyId !== req.user.spotifyId) {
-      return res.status(403).send('Not allowed');
-    }
+    const newPost = await Post.create({
+      content: req.body.content,
+      ThreadId: thread.id,
+      spotifyId: req.user.id,
+      ReplyTo: req.body.replyTo || null,
+    });
 
-    await post.update({ content: req.body.content });
-    res.redirect(`/forum/thread/${post.ThreadId}`); 
+    res.redirect(`/forum/thread/${thread.id}`);
   } catch (err) {
     next(err);
   }
@@ -215,9 +241,6 @@ router.get('/thread/:id/reply-to/:postId', isAuthenticated, async (req, res, nex
     next(err);
   }
 });
-
-
-
 
 
 module.exports = router;

@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       as: 'ReplyToPost',
+     
     });
   };
 

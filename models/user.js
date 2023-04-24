@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = function(models) {
     User.hasMany(models.Thread);
     User.hasMany(models.Post);
+    User.hasOne(models.SpotifyData, { foreignKey: 'userId' });
   };
-
   return User;
 };
+

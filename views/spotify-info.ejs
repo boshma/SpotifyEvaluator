@@ -1,0 +1,73 @@
+<!-- spotify-info.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js library -->
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  
+  <h1>Spotify Evaluator</h1>
+  <h2>Welcome <%= userData.display_name %>! Here is your listening history and metrics.</h2>
+  <h3>Top 5 Artists:</h3>
+  <ol>
+    <% topArtists.forEach(artist => { %>
+      <li><%= artist %></li>
+    <% }) %>
+  </ol>
+  <h3>Top 5 Tracks:</h3>
+  <ol>
+    <% topSongs.forEach(song => { %>
+      <li><%= song.name %> by <%= song.artist %></li>
+    <% }) %>
+  </ol>
+  <h3>Listening History:</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+    <% history.forEach(item => { %>
+      <div>
+        <img src="<%= item.albumImage %>" alt="<%= item.album %>" style="max-width: 150px; max-height: 150px;">
+        <p><strong><%= item.track %></strong> by <%= item.artist %></p>
+        <p>Album: <%= item.album %></p>
+      </div>
+    <% }) %>
+  </div>
+  <!-- Add canvas element for pie chart with a class name for targeting -->
+  <h3>Top 5 Genres:</h3>
+  <canvas id="genreChart" style="width:100%;max-width:600px"></canvas>
+  <script>
+    // Get genreData from server-side and check if it's defined
+    const genreData = JSON.parse('<%- JSON.stringify(genreData) %>');
+    console.log(genreData)
+    var barColors = [
+      "#b91d47",
+      "#00aba9",
+      "#2b5797",
+      "#e8c3b9",
+      "#1e7145"
+    ];
+
+    // Create pie chart only if genreData is defined
+    if (genreData && genreData.length > 0) {
+      new Chart("genreChart", {
+        type: 'pie',
+        data: {
+          labels: genreData.map(genre => genre.label),
+          datasets: [{
+            data: genreData.map(genre => genre.value),
+            backgroundColor: barColors,
+          }],
+        },
+        options: {
+          title: {
+          display: true,
+          text: "Top 5 Genres"
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

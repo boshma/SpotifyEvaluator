@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <title>Survey Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.17/tailwind.min.css">
+  </head>
+  <body class="h-full flex items-center justify-center bg-gray-100">
+    <div class="w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-6">Survey</h1>
+      <form method="POST" action="/survey/submit">
+        <div class="mb-6">
+          <label class="block font-medium mb-2" for="question1">How would you rate this app?</label>
+          <div class="flex items-center">
+            <input class="mr-2" type="radio" name="question1" id="1/5" value="1/5">
+            <label class="mr-6" for="1/5">1/5</label>
+            <input class="mr-2" type="radio" name="question1" id="2/5" value="2/5">
+            <label class="mr-6" for="2/5">2/5</label>
+            <input class="mr-2" type="radio" name="question1" id="3/5" value="3/5">
+            <label class="mr-6" for="3/5">3/5</label>
+            <input class="mr-2" type="radio" name="question1" id="4/5" value="4/5">
+            <label class="mr-6" for="4/5">4/5</label>
+            <input class="mr-2" type="radio" name="question1" id="5/5" value="5/5">
+            <label for="5/5">5/5</label>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block font-medium mb-2" for="question2">Would you pay for this app if it cost money?</label>
+          <div class="flex items-center">
+            <input class="mr-2" type="radio" name="question2" id="No" value="No">
+            <label class="mr-6" for="No">No</label>
+            <input class="mr-2" type="radio" name="question2" id="Yes" value="Yes">
+            <label for="Yes">Yes</label>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block font-medium mb-2" for="question3">How likely are you to recommend this app to a friend?</label>
+          <div class="flex items-center">
+            <input class="mr-2" type="radio" name="question3" id="Not likely" value="Not likely">
+            <label class="mr-6" for="Not likely">Not likely</label>
+            <input class="mr-2" type="radio" name="question3" id="Somewhat likely" value="Somewhat likely">
+            <label class="mr-6" for="Somewhat likely">Somewhat likely</label>
+            <input class="mr-2" type="radio" name="question3" id="Very likely" value="Very likely">
+            <label class="mr-6" for="Very likely">Very likely</label>
+          </div>
+        </div>
+
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+    </form>
+  </div>
+  </body>
+</html>
