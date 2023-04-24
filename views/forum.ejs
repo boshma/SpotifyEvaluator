@@ -1,34 +1,40 @@
 <!-- forum.ejs -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.17/tailwind.min.css"  crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
-  <body>
-    <h1>Forum</h1>
-    <%- include('partials/navbar') %>
-    <hr />
-    <% if (threads.length === 0) { %>
-    <p>No threads available. Be the first to create one!</p>
-    <a href="/forum/new">Create a new thread</a>
-    <% } else { %> <% threads.forEach(thread => { %>
-    <div>
-      <h2><a href="/forum/thread/<%= thread.id %>"><%= thread.title %></a></h2>
-      <p>By <%= thread.author.displayName %> at <%= thread.createdAt %></p>
-      <% if (user && thread.author.spotifyId === user.spotifyId) { %>
-      <form
-        action="/forum/thread/<%= thread.id %>/delete"
-        method="post"
-        style="display: inline"
-      >
-        <button type="submit">Delete</button>
-      </form>
-      <% } %>
+  <body class="bg-gray-100">
+    <div class="container mx-auto my-10">
+      <h1 class="text-4xl font-semibold mb-6">Forum</h1>
+      <%- include('partials/navbar') %>
+      <hr class="border-b border-gray-400 mb-6" />
+      <% if (threads.length === 0) { %>
+      <p class="text-lg mb-4">No threads available. Be the first to create one!</p>
+      <a href="/forum/new" class="bg-blue-500 text-white py-2 px-4 rounded">Create a new thread</a>
+      <% } else { %> <% threads.forEach(thread => { %>
+      <div class="bg-white p-6 rounded shadow mb-6">
+        <h2 class="text-2xl font-semibold mb-2"><a href="/forum/thread/<%= thread.id %>" class="text-blue-500 hover:text-blue-700"><%= thread.title %></a></h2>
+        <p class="text-gray-600 mb-2">By <%= thread.author.displayName %> at <%= thread.createdAt %></p>
+        <% if (user && thread.author.spotifyId === user.spotifyId) { %>
+        <form
+          action="/forum/thread/<%= thread.id %>/delete"
+          method="post"
+          style="display: inline"
+        >
+          <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded">Delete</button>
+        </form>
+        <% } %>
+      </div>
+      <% }) %> <% if (user) { %>
+      <a href="/forum/new" class="bg-blue-500 text-white py-2 px-4 rounded">Create a new thread</a>
+      <% } else { %>
+      <p class="text-lg mb-4">Please <a href="/" class="text-blue-500 hover:text-blue-700">sign in</a> to post a reply.</p>
+      <% } %> <% } %>
     </div>
-    <% }) %> <% if (user) { %>
-    <a href="/forum/new">Create a new thread</a>
-    <% } else { %>
-    <p>Please <a href="/">sign in</a> to post a reply.</p>
-    <% } %> <% } %>
   </body>
 </html>
+
