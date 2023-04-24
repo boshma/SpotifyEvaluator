@@ -16,6 +16,30 @@
       <p><strong>Profile Image:</strong> <%= user.profileImage %></p>
       <h2>Spotify Data</h2>
       <!-- Add additional data from user's SpotifyData model here -->
+        <h3>Top 5 Artists:</h3>
+        <ol>
+          <% topArtists.forEach(artist => { %>
+            <li><%= artist %></li>
+          <% }) %>
+        </ol>
+        <h3>Top 5 Tracks:</h3>
+        <ol>
+          <% topSongs.forEach(song => { %>
+            <li><%= song.name %> by <%= song.artist %></li>
+          <% }) %>
+        </ol>
+        <h3>Listening History:</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <% history.forEach(item => { %>
+            <div>
+              <img src="<%= item.albumImage %>" alt="<%= item.album %>" style="max-width: 150px; max-height: 150px;">
+              <p><strong><%= item.track %></strong> by <%= item.artist %></p>
+              <p>Album: <%= item.album %></p>
+            </div>
+          <% }) %>
+        </div>
+
+
     <% } else { %>
       <p>User not found</p> <!-- Show error message if user is null or undefined -->
     <% } %>
